@@ -319,5 +319,25 @@ By the end you should be able to read a modern NeurIPS/ICLR paper, reproduce its
         { id: 'responsible-ml', title: 'Fairness, safety & responsible ML', summary: 'Fairness criteria, interpretability, robustness and alignment.' },
       ],
     },
+    // 21 ----------------------------------------------------------------------
+    {
+      id: 'frontiers',
+      title: 'Frontiers & open problems',
+      summary: 'Where machine learning stands as of 2026, what nobody can do yet, and why those problems resist.',
+      references: [
+        { authors: 'Z. C. Lipton & J. Steinhardt', title: 'Troubling Trends in Machine Learning Scholarship', year: 2018, venue: 'arXiv:1807.03341', url: 'https://arxiv.org/abs/1807.03341' },
+        { authors: 'R. Agarwal, M. Schwarzer, P. S. Castro, A. Courville & M. G. Bellemare', title: 'Deep Reinforcement Learning at the Edge of the Statistical Precipice', year: 2021, venue: 'NeurIPS', url: 'https://arxiv.org/abs/2108.13264' },
+        { authors: 'Y. Bahri, J. Kadmon, J. Pennington, S. S. Schoenholz, J. Sohl-Dickstein & S. Ganguli', title: 'Statistical Mechanics of Deep Learning', year: 2020, venue: 'Annual Review of Condensed Matter Physics 11, 501–528' },
+        { authors: 'B. Recht, R. Roelofs, L. Schmidt & V. Shankar', title: 'Do ImageNet Classifiers Generalize to ImageNet?', year: 2019, venue: 'ICML', url: 'https://arxiv.org/abs/1902.10811' },
+        { authors: 'J. Pineau, P. Vincent-Lamarre, K. Sinha, V. Larivière, A. Beygelzimer, F. d’Alché-Buc, E. Fox & H. Larochelle', title: 'Improving Reproducibility in Machine Learning Research (A Report from the NeurIPS 2019 Reproducibility Program)', year: 2021, venue: 'JMLR 22(164)' },
+      ],
+      lessons: [
+        { id: 'frontier-state-of-the-art', title: 'The state of the art', summary: 'What machine learning can reliably do in 2026 — and how to tell a demonstrated result from an advertised one.', prereqs: ['ml/scaling-laws', 'ml/diffusion-models', 'ml/rlhf-dpo'] },
+        { id: 'frontier-open-problems', title: 'What nobody can do yet', summary: 'Reasoning, sample efficiency, continual learning, interpretability, evaluation and alignment — stated so you would recognise a solution.', prereqs: ['ml/frontier-state-of-the-art', 'ml/calibration-uncertainty'] },
+        { id: 'frontier-why-hard', title: 'Why these problems are hard', summary: 'Missing ground truth, contaminated benchmarks, unaffordable experiments and non-identifiable explanations — and what has been tried.', prereqs: ['ml/frontier-open-problems', 'ml/evaluation-data-splits'] },
+        { id: 'frontier-cross-field', title: 'Ideas borrowed from elsewhere', summary: 'Thermodynamics, optimal transport, statistical physics and group theory inside modern ML — and what ML exported to the sciences.', prereqs: ['ml/score-sde', 'ml/flow-matching', 'math/time-reversal-sde'] },
+        { id: 'frontier-reading-research', title: 'Following the frontier', summary: 'Venues, preprints, how benchmarks get gamed, the reproducibility record, and open questions a newcomer could work on.', prereqs: ['ml/frontier-why-hard', 'ml/experimental-methodology'] },
+      ],
+    },
   ],
 } satisfies Subject;
