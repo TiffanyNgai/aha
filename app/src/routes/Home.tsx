@@ -4,6 +4,7 @@ import type { LessonRef, Subject } from '../content/types';
 import { isIOS, isStandalone } from '../lib/push';
 import { todayXp, useProgress } from '../store/progress';
 import { TopBar } from '../components/Chrome';
+import { Wordmark } from '../components/Logo';
 
 export function subjectStats(s: Subject, lessons: Record<string, unknown>) {
   const all = s.units.flatMap((u) => u.lessons.map((l) => `${s.id}/${l.id}` as LessonRef));
@@ -19,7 +20,7 @@ export default function Home() {
   const showInstall = !isStandalone() && !s.seenInstallTip;
   return (
     <>
-      <TopBar title="AHA!" />
+      <TopBar title={<Wordmark />} />
       <main className="page">
         <div className="card goal-card">
           <div className="ring" style={{ ['--p' as any]: pct }}><span>{pct}%</span></div>
@@ -42,12 +43,12 @@ export default function Home() {
           {subjects.map((sub) => {
             const st = subjectStats(sub, s.lessons);
             return (
-              <Link key={sub.id} to={`/subject/${sub.id}`} className="subject-tile">
+              <Link key={sub.id} to={`/subject/${sub.id}`} className="subject-tile" style={{ ['--accent' as any]: sub.color }}>
                 <div className="emoji" style={{ background: sub.color }}>{sub.emoji}</div>
                 <div className="name">{sub.name}</div>
-                <div className="meta">{sub.tagline}</div>
+                <div className="meta tagline">{sub.tagline}</div>
                 <div className="grow" />
-                <div className="bar" style={{ ['--accent' as any]: sub.color }}><i style={{ width: `${st.total ? (st.done / st.total) * 100 : 0}%` }} /></div>
+                <div className="bar"><i style={{ width: `${st.total ? (st.done / st.total) * 100 : 0}%` }} /></div>
                 <div className="meta">{st.done}/{st.total} lessons · {st.ready} ready</div>
               </Link>
             );
