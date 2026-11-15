@@ -120,7 +120,7 @@ No noise schedule to tune, no SDE, no ELBO — just regression and an ODE. Becau
       title: 'Diffusion is a special case',
       body: String.raw`Generalize to **Gaussian paths** $\mathbf x_t=\alpha_t\mathbf x_1+\sigma_t\mathbf x_0$ with $\alpha_0=0,\sigma_0=1$ and $\alpha_1=1,\sigma_1\approx0$. The conditional velocity is $\dot\alpha_t\mathbf x_1+\dot\sigma_t\mathbf x_0$, and using Tweedie ($\mathbb E[\mathbf x_0\mid\mathbf x_t]=-\sigma_t\nabla\log p_t$) the marginal velocity is
 $$\mathbf u_t(\mathbf x)=\frac{\dot\alpha_t}{\alpha_t}\mathbf x+\sigma_t\Big(\frac{\dot\alpha_t\sigma_t}{\alpha_t}-\dot\sigma_t\Big)\nabla\log p_t(\mathbf x).$$
-So a velocity model and a score model carry the same information. Choosing $\alpha_t,\sigma_t$ to match the VP schedule recovers exactly the [probability-flow ODE](@ml/score-sde) of diffusion; the straight path $\alpha_t=t,\sigma_t=1-t$ is the "rectified flow"/OT-path choice. [Stochastic interpolants](@ml/stochastic-interpolants) push this unification further.`,
+So a velocity model and a score model carry the same information. Choosing $\alpha_t,\sigma_t$ to match a VP schedule recovers the [probability-flow ODE](@ml/score-sde) of diffusion (up to two bookkeeping differences: time here runs from noise at $t=0$ to data at $t=1$, the reverse of the score-SDE lesson, and diffusion schedules only reach pure noise approximately); the straight path $\alpha_t=t,\sigma_t=1-t$ is the "rectified flow"/OT-path choice. [Stochastic interpolants](@ml/stochastic-interpolants) push this unification further.`,
     },
     {
       kind: 'match',
