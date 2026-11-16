@@ -28,6 +28,16 @@ Every committed lesson has been through an independent fact-check. Nothing is co
 
 Start a later tier only when the tier above has no unwritten units left.
 
+## Paused work (2026-11-15 evening) — do not auto-resume
+Tiffany said "not tonight". Seven Fable writers were cut off by the usage limit before finishing;
+start fresh writers (model: fable) for these and tell them partial files may exist on disk:
+- ml/research-practice (5 lessons) and drug/research-practice (8) — NOT started; highest priority
+- ml/llms — 6 of 7 files on disk (missing llm-inference), some may be partial
+- ml/rl-foundations + value-based-rl — 7 files on disk, plus widget MlBanditRegret.tsx
+- ml/policy-optimization + advanced-rl — 8 of 12 on disk (missing offline-rl, imitation-learning, multi-agent-rl, rl-theory)
+- drug/quantum-drug + translational — 8 of 9 on disk (missing precision-medicine-omics), plus widget DrugQuantumResourceEstimator.tsx
+None of those files are fact-checked; review before committing. After ML and drug: STOP (Tiffany's instruction).
+
 ## Still to write
 - **ml:** llms, rl-foundations, value-based-rl, policy-optimization, advanced-rl, research-practice
 - **drug:** quantum-drug, translational, research-practice
