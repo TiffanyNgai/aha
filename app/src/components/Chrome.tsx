@@ -2,7 +2,7 @@ import { NavLink } from 'react-router-dom';
 import { MAX_HEARTS, liveStreak, useProgress } from '../store/progress';
 import type { ReactNode } from 'react';
 
-export function TopBar({ title, left, right }: { title?: ReactNode; left?: ReactNode; right?: ReactNode }) {
+export function TopBar({ title, left }: { title?: ReactNode; left?: ReactNode }) {
   const s = useProgress();
   const streak = liveStreak(s);
   return (
@@ -12,7 +12,6 @@ export function TopBar({ title, left, right }: { title?: ReactNode; left?: React
       <span className={'stat fire' + (streak ? '' : ' dim')} title="Day streak">🔥 {streak}</span>
       <span className="stat gem" title="Total XP">⚡ {s.xp}</span>
       {s.settings.heartsEnabled && <span className="stat heart" title="Hearts">❤️ {Math.min(s.hearts, MAX_HEARTS)}</span>}
-      {right}
     </header>
   );
 }

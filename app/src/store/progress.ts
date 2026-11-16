@@ -1,7 +1,6 @@
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 import type { LessonRef } from '../content/types';
-import { progressKeyFor, safeStorage, useProfiles } from './profiles';
 
 export const MAX_HEARTS = 5;
 
@@ -140,31 +139,13 @@ export const useProgress = create<State & Actions>()(
       version: 2,
       // v2 added `resume`; older saves simply have no saved positions.
       migrate: (s: any) => ({ ...s, resume: s?.resume ?? {} }),
-      // Each learner profile gets its own storage key, so the key is resolved on every access
-      // rather than fixed when the store is created.
-      storage: createJSONStorage(() => ({
-        getItem: (k) => safeStorage.getItem(progressKeyFor(useProfiles.getState().active, k)),
-        setItem: (k, v) => safeStorage.setItem(progressKeyFor(useProfiles.getState().active, k), v),
-        removeItem: (k) => safeStorage.removeItem(progressKeyFor(useProfiles.getState().active, k)),
-      })),
+      storage: createJSONStorage(() => {
+        try { localStorage.setItem('__t', '1'); localStorage.removeItem('__t'); return localStorage; }
+        catch { const m = new Map<string, string>(); return { getItem: (k) => m.get(k) ?? null, setItem: (k, v) => void m.set(k, v), removeItem: (k) => void m.delete(k) }; }
+      }),
     },
   ),
 );
-
-/**
- * Make another profile the active learner and load its progress. A profile that has never been
- * used starts from scratch; writing `initial` first matters, because rehydrating from an empty
- * key would otherwise leave the previous learner's state in memory and then save it under the
- * new name.
- */
-export async function switchProfile(id: string) {
-  const profiles = useProfiles.getState();
-  if (id === profiles.active) return;
-  profiles.setActive(id);
-  const saved = safeStorage.getItem(progressKeyFor(id));
-  if (saved) await useProgress.persist.rehydrate();
-  else useProgress.setState({ ...initial, heartsUpdatedAt: Date.now() });
-}
 
 export const todayXp = (s: State) => s.xpByDay[dayKey()] ?? 0;
 /** Streak shown to the user: 0 if they've missed more than allowed. */

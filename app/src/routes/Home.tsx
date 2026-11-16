@@ -3,7 +3,6 @@ import { isReady, subjects } from '../content/registry';
 import type { LessonRef, Subject } from '../content/types';
 import { isIOS, isStandalone } from '../lib/push';
 import { todayXp, useProgress } from '../store/progress';
-import { activeProfile, useProfiles } from '../store/profiles';
 import { TopBar } from '../components/Chrome';
 import { Wordmark } from '../components/Logo';
 
@@ -16,13 +15,12 @@ export function subjectStats(s: Subject, lessons: Record<string, unknown>) {
 
 export default function Home() {
   const s = useProgress();
-  const who = useProfiles(activeProfile);
   const xpToday = todayXp(s);
   const pct = Math.min(100, Math.round((xpToday / s.settings.dailyGoal) * 100));
   const showInstall = !isStandalone() && !s.seenInstallTip;
   return (
     <>
-      <TopBar title={<Wordmark />} right={<Link to="/profile" className="avatar-chip" aria-label={`${who.name} — switch learner`} title={who.name}>{who.emoji}</Link>} />
+      <TopBar title={<Wordmark />} />
       <main className="page">
         <div className="card goal-card">
           <div className="ring" style={{ ['--p' as any]: pct }}><span>{pct}%</span></div>
