@@ -12,8 +12,18 @@ crons = ["0 * * * *"]
 binding = "SUBS"
 id = "12d7ceaf378142fa9d577bd2caa03358"
 
+# Progress sync (one row per Google account). Create with:
+#   npx wrangler d1 create aha-sync      → paste the database_id below
+# The table is created on first use; no migration step.
+[[d1_databases]]
+binding = "SYNC_DB"
+database_name = "aha-sync"
+database_id = ""
+
 [vars]
 # Origin of your hosted app, for CORS (e.g. https://you.github.io)
 ALLOWED_ORIGIN = "https://tiffanyngai.github.io"
 VAPID_SUBJECT = "mailto:tngai@uwaterloo.ca"
+# OAuth 2.0 Web client ID from Google Cloud Console (not a secret; same value as the app's VITE_GOOGLE_CLIENT_ID)
+GOOGLE_CLIENT_ID = ""
 # Secrets (set with `npx wrangler secret put NAME`): VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY

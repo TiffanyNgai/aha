@@ -25,7 +25,7 @@ push-worker/   Cloudflare Worker that stores push subscriptions and sends daily 
 ## How it fits together
 | Piece | Where it runs | What it stores |
 |---|---|---|
-| The app | GitHub Pages (static files, free HTTPS) | Nothing server-side. All progress (XP, streak, lessons, review schedule, settings) lives in each user's browser `localStorage` (key `aha-progress`). No accounts, no sync between devices. Users can back up via Profile → Export/Import. |
+| The app | GitHub Pages (static files, free HTTPS) | Progress (XP, streak, lessons, review schedule, settings) lives in the browser's `localStorage` (key `aha-progress`) and works with no account at all. Signing in with Google (Profile → Account & sync) additionally keeps one person's progress in step across their devices; see [Cross-device sync](#cross-device-sync). Users can back up via Profile → Export/Import. |
 | Push worker | Cloudflare Workers (free tier) + KV store `SUBS` | Per subscribed device only: random device id, push address, reminder hour, time zone, last practice day, streak number. Used to send at most one reminder a day. |
 
 If the worker is down or not configured, the app still works fully; only push reminders stop.
@@ -69,6 +69,48 @@ public website. If that ever happens, delete it with `npx wrangler delete --name
 generated `wrangler.jsonc` from the root.
 
 Logs from the live worker: `cd push-worker && npx wrangler tail`.
+
+## Cross-device sync
+
+Signing in with Google (Profile → **Account & sync**) keeps one person's progress in step across
+their devices. It is optional: without it the app works exactly as before, on-device only.
+
+**How it works.** The app asks Google for an ID token and sends it to the worker with every sync
+request. The worker verifies the token's signature against Google's published keys, checks it was
+issued for this app's client ID, and stores that account's progress in a D1 database keyed by the
+Google account id — one row per person, gzip'd JSON. Nobody else's token can read it. Merging is
+done on the device (`app/src/lib/merge.ts`): lessons finished on either device all count, daily XP
+takes the larger figure per day so nothing is double-counted, and a stale write is refused with the
+newer copy so the device merges again. The worker only stores; it never changes the data.
+
+**One-time setup (all free tiers):**
+
+1. **Google Cloud Console** → APIs & Services → Credentials → *Create credentials* → *OAuth client
+   ID* → type **Web application**. Authorised JavaScript origins: `https://tiffanyngai.github.io`,
+   plus `http://localhost:5173` and `http://localhost:5174` for local dev. No redirect URIs are
+   needed. Copy the **Client ID** (it is public; the client *secret* is not used anywhere).
+2. **GitHub** → repo *Settings → Secrets and variables → Actions → Variables*: add
+   `VITE_GOOGLE_CLIENT_ID` with that value. The next push to `main` builds it in.
+3. **Worker**, from inside `push-worker/`:
+
+```bash
+npx wrangler d1 create aha-sync
+```
+
+   Paste the printed `database_id` into `wrangler.toml` under `[[d1_databases]]`, set
+   `GOOGLE_CLIENT_ID` in `[vars]` to the same Client ID, then deploy:
+
+```bash
+npm run deploy
+```
+
+   The `progress` table is created on first use; there is no migration to run.
+
+**Limits worth knowing.** Google ID tokens last an hour; the app renews them silently while the
+browser is signed in to Google, and shows "sign in again" in Profile if it cannot. D1's free tier
+allows 100,000 writes a day; the app writes at most once every few seconds per device, and only
+when something changed. "Delete cloud copy" in Profile removes the account's row; signing out keeps
+the device's own copy.
 
 ## First-time deployment (already done — for reference or a fresh setup)
 1. **App on GitHub Pages**

@@ -1,6 +1,7 @@
 import { buildPushPayload, type PushSubscription } from '@block65/webcrypto-web-push';
+import { handleSync, type SyncEnv } from './sync';
 
-interface Env {
+interface Env extends SyncEnv {
   SUBS: KVNamespace;
   ALLOWED_ORIGIN: string;
   VAPID_SUBJECT: string;
@@ -19,8 +20,9 @@ interface Record {
 
 const cors = (env: Env) => ({
   'access-control-allow-origin': env.ALLOWED_ORIGIN || '*',
-  'access-control-allow-methods': 'POST, OPTIONS',
-  'access-control-allow-headers': 'content-type',
+  'access-control-allow-methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'access-control-allow-headers': 'content-type, authorization, x-base-updated-at',
+  'access-control-expose-headers': 'x-updated-at',
 });
 
 const localParts = (tz: string, d = new Date()) => {
@@ -70,8 +72,9 @@ async function send(env: Env, rec: Record) {
 export default {
   async fetch(req: Request, env: Env): Promise<Response> {
     if (req.method === 'OPTIONS') return new Response(null, { headers: cors(env) });
-    if (req.method !== 'POST') return new Response('AHA! push worker', { headers: cors(env) });
     const url = new URL(req.url);
+    if (url.pathname === '/sync') return handleSync(req, env, cors(env));
+    if (req.method !== 'POST') return new Response('AHA! push worker', { headers: cors(env) });
     let body: any;
     try {
       const text = await req.text();

@@ -17,6 +17,7 @@ jobs:
         env:
           VITE_PUSH_URL: ${{ vars.VITE_PUSH_URL }}
           VITE_VAPID_PUBLIC_KEY: ${{ vars.VITE_VAPID_PUBLIC_KEY }}
+          VITE_GOOGLE_CLIENT_ID: ${{ vars.VITE_GOOGLE_CLIENT_ID }}
       - uses: actions/upload-pages-artifact@v3
         with: { path: app/dist }
   deploy:

@@ -3,6 +3,7 @@ import { subjects } from '../content/registry';
 import { disablePush, enablePush, isStandalone, pushConfigured } from '../lib/push';
 import { dayKey, liveStreak, useProgress } from '../store/progress';
 import { TopBar } from '../components/Chrome';
+import { AccountCard } from '../components/AccountCard';
 
 function Week() {
   const xpByDay = useProgress((s) => s.xpByDay);
@@ -69,8 +70,11 @@ export default function Profile() {
           <input type="checkbox" className="toggle" checked={s.settings.pushEnabled} onChange={(e) => togglePush(e.target.checked)} /></div>
         {msg && <div className="banner" style={{ marginTop: 10 }}>{msg}</div>}
 
+        <h3 style={{ marginTop: 20 }}>Account & sync</h3>
+        <AccountCard />
+
         <h3 style={{ marginTop: 20 }}>Your data</h3>
-        <p className="muted" style={{ fontSize: 14 }}>Progress is stored only on this device. Export a backup to move it to another phone.</p>
+        <p className="muted" style={{ fontSize: 14 }}>Progress is saved on this device, and in your account when you are signed in. Export a backup any time.</p>
         <div className="row"><button className="btn small blue" onClick={exportData}>⬇ Export</button>
           <button className="btn small secondary" onClick={() => file.current?.click()}>⬆ Import</button>
           <button className="btn small danger" onClick={() => { if (confirm('Reset all progress on this device?')) s.reset(); }}>Reset</button></div>
