@@ -25,7 +25,7 @@ push-worker/   Cloudflare Worker that stores push subscriptions and sends daily 
 ## How it fits together
 | Piece | Where it runs | What it stores |
 |---|---|---|
-| The app | GitHub Pages (static files, free HTTPS) | Nothing server-side. All progress (XP, streak, lessons, review schedule, settings) lives in each user's browser `localStorage` (key `aha-progress`). No accounts, no sync between devices. Users can back up via Profile → Export/Import. |
+| The app | GitHub Pages (static files, free HTTPS) | Nothing server-side. All progress (XP, streak, lessons, review schedule, settings) lives in the browser's `localStorage`. No accounts, no sync between devices. A device can hold several **learner profiles** (Profile → "Who's learning?"), each with its own progress: the first profile uses key `aha-progress`, later ones `aha-progress:<id>`, and the list of profiles lives in `aha-profiles`. Users can back up the active profile via Profile → Export/Import. |
 | Push worker | Cloudflare Workers (free tier) + KV store `SUBS` | Per subscribed device only: random device id, push address, reminder hour, time zone, last practice day, streak number. Used to send at most one reminder a day. |
 
 If the worker is down or not configured, the app still works fully; only push reminders stop.

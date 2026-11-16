@@ -3,6 +3,8 @@ import { subjects } from '../content/registry';
 import { disablePush, enablePush, isStandalone, pushConfigured } from '../lib/push';
 import { dayKey, liveStreak, useProgress } from '../store/progress';
 import { TopBar } from '../components/Chrome';
+import { ProfileSwitcher } from '../components/ProfileSwitcher';
+import { activeProfile, useProfiles } from '../store/profiles';
 
 function Week() {
   const xpByDay = useProgress((s) => s.xpByDay);
@@ -26,12 +28,13 @@ function Week() {
 
 export default function Profile() {
   const s = useProgress();
+  const who = useProfiles(activeProfile);
   const [msg, setMsg] = useState<string | null>(null);
   const file = useRef<HTMLInputElement>(null);
   const done = Object.keys(s.lessons).length;
   const exportData = () => {
     const blob = new Blob([JSON.stringify({ state: useProgress.getState(), exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
-    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `aha-progress-${dayKey()}.json`; a.click();
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `aha-${who.name.replace(/[^\w-]+/g, '_')}-${dayKey()}.json`; a.click();
   };
   const togglePush = async (on: boolean) => {
     if (!on) { await disablePush(); s.updateSettings({ pushEnabled: false }); setMsg('Reminders turned off.'); return; }
@@ -41,9 +44,10 @@ export default function Profile() {
   };
   return (
     <>
-      <TopBar title="Profile" />
+      <TopBar title={`${who.emoji} ${who.name}`} />
       <main className="page">
-        <div className="subject-grid" style={{ gridTemplateColumns: 'repeat(2, minmax(0,1fr))' }}>
+        <ProfileSwitcher />
+        <div className="subject-grid" style={{ gridTemplateColumns: 'repeat(2, minmax(0,1fr))', marginTop: 12 }}>
           {[['🔥', liveStreak(s), 'Day streak'], ['⚡', s.xp, 'Total XP'], ['👑', done, 'Lessons done'], ['🏅', s.bestStreak, 'Best streak']].map(([ic, v, l]) => (
             <div key={l as string} className="card"><div style={{ fontSize: 22, fontWeight: 800 }}>{ic} {v}</div><div className="muted" style={{ fontSize: 13 }}>{l}</div></div>
           ))}
@@ -70,10 +74,10 @@ export default function Profile() {
         {msg && <div className="banner" style={{ marginTop: 10 }}>{msg}</div>}
 
         <h3 style={{ marginTop: 20 }}>Your data</h3>
-        <p className="muted" style={{ fontSize: 14 }}>Progress is stored only on this device. Export a backup to move it to another phone.</p>
+        <p className="muted" style={{ fontSize: 14 }}>{who.name}’s progress is stored only on this device. Export a backup to move it to another phone; importing replaces {who.name}’s progress only.</p>
         <div className="row"><button className="btn small blue" onClick={exportData}>⬇ Export</button>
           <button className="btn small secondary" onClick={() => file.current?.click()}>⬆ Import</button>
-          <button className="btn small danger" onClick={() => { if (confirm('Reset all progress on this device?')) s.reset(); }}>Reset</button></div>
+          <button className="btn small danger" onClick={() => { if (confirm(`Reset all of ${who.name}’s progress?`)) s.reset(); }}>Reset</button></div>
         <input ref={file} type="file" accept="application/json" hidden onChange={async (e) => {
           const f = e.target.files?.[0]; if (!f) return; setMsg(s.importState(await f.text()) ? 'Progress imported.' : 'That file is not an AHA! backup.');
         }} />

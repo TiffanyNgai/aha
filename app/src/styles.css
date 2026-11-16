@@ -263,6 +263,24 @@ select, input[type="number"] { font-family: inherit; font-size: 15px; padding: 6
 .resume-note { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 16px; padding: 8px 12px; border-radius: 12px; font-size: 13px; font-weight: 600; background: color-mix(in srgb, var(--blue) 12%, var(--bg)); color: var(--fg); }
 .resume-note button { margin-left: auto; border: 0; background: none; color: var(--blue); font: inherit; font-weight: 800; cursor: pointer; text-decoration: underline; }
 
+/* learner profiles */
+.avatar-chip { display: grid; place-items: center; width: 34px; height: 34px; border-radius: 50%; font-size: 18px; text-decoration: none;
+  background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.profile-row { display: flex; gap: 10px; overflow-x: auto; padding: 2px 0 6px; scrollbar-width: none; }
+.profile-row::-webkit-scrollbar { display: none; }
+.profile-chip { flex: none; display: flex; flex-direction: column; align-items: center; gap: 5px; width: 72px; padding: 8px 4px;
+  border: 2px solid var(--border); border-radius: 16px; background: var(--surface-2); cursor: pointer; transition: border-color .12s, transform .08s; }
+.profile-chip .avatar { width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center; font-size: 22px; background: var(--surface); }
+.profile-chip .pname { font-size: 12px; font-weight: 700; max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--muted); }
+.profile-chip.active { border-color: var(--brand); background: color-mix(in srgb, var(--brand) 10%, var(--surface-2)); }
+.profile-chip.active .pname { color: var(--fg); }
+.profile-chip.add .avatar { color: var(--muted); font-weight: 800; border: 2px dashed var(--border-strong); background: none; }
+.profile-chip:active { transform: scale(.96); }
+.profile-form { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.profile-form .numeric-input { font-size: 16px; }
+.emoji-pick { display: flex; flex-wrap: wrap; gap: 6px; }
+.emoji-pick .w-btn { font-size: 18px; padding: 4px 8px; }
+
 /* lesson status on the subject path */
 .node.started { border-color: var(--gold); color: var(--gold-d); }
 .node-ring { position: absolute; inset: -5px; width: calc(100% + 10px); height: calc(100% + 10px); transform: rotate(-90deg); pointer-events: none; }
